@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Discover → Synthesise → Ideate → MVP Scope — Worked Examples</title>
+<style>
+  body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Roboto,sans-serif; max-width:800px; margin:0 auto; padding:32px 20px 80px; line-height:1.6; }
+  h1 { font-size:22px; margin-bottom:4px; }
+  .sub { color:#AAAAAA; font-size:14px; margin-bottom:36px; }
+  .example { border:1px solid #2a2a2a; border-radius:10px; padding:20px 24px; margin-bottom:28px; background:#171717; }
+  .example h2 { color:#FF645B; font-size:18px; margin-top:0; }
+  .goal { color:#FECE51; font-size:14px; margin-bottom:16px; }
+
+  .h-discover { color:#4EA1FF; text-transform:uppercase; letter-spacing:0.5px; font-size:14px; margin:16px 0 6px; }
+  .h-synth { color:#9B90FF; text-transform:uppercase; letter-spacing:0.5px; font-size:14px; margin:16px 0 6px; }
+  .h-ideate { color:#FECE51; text-transform:uppercase; letter-spacing:0.5px; font-size:14px; margin:16px 0 6px; }
+  .h-mvp { color:#5FD68C; text-transform:uppercase; letter-spacing:0.5px; font-size:14px; margin:16px 0 6px; }
+  .mindset { color:#888; font-style:italic; font-size:12px; margin:2px 0 0; }
+  ul { margin:0 0 0 18px; padding:0; }
+  li { margin-bottom:4px; font-size:14px; }
+  strong { color:#fff; }
+</style>
+</head>
+<body>
+
+<h1>UX Workflow Practice — Worked Examples</h1>
+<div class="sub">Discover → Synthesise → Ideate → MVP Scope, applied to three quick scenarios</div>
+
+<div class="example">
+<h2>1. Online learning platform — registration drop-off</h2>
+<div class="goal">Goal: 28% → 45% registration completion</div>
+
+<h3 class="h-discover">Discover</h3>
+<ul>
+<li>Idea pitch: users drop off pre-signup because they haven't seen value yet</li>
+<li>Proto-persona: Alex, wants proof of value before committing details</li>
+<li>Competitor audit: competitors preview content before signup, we don't</li>
+<li>5 Whys: root cause — untested assumption that showing value first hurts conversion</li>
+<li>AI-assisted research: hesitation spikes right after the value-prop screen</li>
+<li>Empathy map: skeptical, rushed, "let me just look around first"</li>
+</ul>
+<p class="mindset">Mindset shift: unknown problem → understood problem</p>
+
+<h3 class="h-synth">Synthesise</h3>
+<ul>
+<li>Affinity mapping: strongest theme — "no value shown before signup"</li>
+<li>POV: Alex needs to see proof of value before committing details, because he doesn't trust it's worth the trade-off</li>
+<li>HMW: how might we show proof of value before asking for signup, so users trust it's worth committing their details?</li>
+</ul>
+<p class="mindset">Mindset shift: raw insight → design challenge</p>
+
+<h3 class="h-ideate">Ideate</h3>
+<ul>
+<li>Crazy 8s: free preview lesson, demo video, sandbox trial, testimonials, curriculum preview, live sample class, instructor intro, progress-unlock</li>
+<li>Assumption: a free preview increases perceived value enough to offset form friction</li>
+<li>Shortlist: free preview lesson before signup</li>
+</ul>
+<p class="mindset">Mindset shift: many ideas → one bet</p>
+
+<h3 class="h-mvp">MVP Scope</h3>
+<ul>
+<li><strong>Must:</strong> one free lesson, no login, signup prompt only after</li>
+<li><strong>Should:</strong> "1 of X lessons" progress indicator</li>
+<li><strong>Could:</strong> testimonial strip below preview</li>
+<li><strong>Won't:</strong> full curriculum browsing, sandbox mode, instructor intro video</li>
+</ul>
+<p class="mindset">Mindset shift: a bet → real-world proof</p>
+</div>
+
+<div class="example">
+<h2>2. Online retail store — cart abandonment</h2>
+<div class="goal">Goal: 65% → 40% cart abandonment</div>
+
+<h3 class="h-discover">Discover</h3>
+<ul>
+<li>Idea pitch: shipping cost surprise revealed only at final checkout step</li>
+<li>Proto-persona: budget-conscious shopper, hates hidden fees</li>
+<li>Competitor audit: competitors show shipping cost upfront, we don't</li>
+<li>5 Whys: root cause — fee revealed late feels like a bait-and-switch</li>
+<li>AI-assisted research: abandonment spikes right after shipping cost is shown</li>
+<li>Empathy map: frustrated, feels tricked, closes tab</li>
+</ul>
+<p class="mindset">Mindset shift: unknown problem → understood problem</p>
+
+<h3 class="h-synth">Synthesise</h3>
+<ul>
+<li>Affinity mapping: strongest theme — "hidden cost surprise"</li>
+<li>POV: shopper needs to know total cost early, because unexpected fees feel deceptive</li>
+<li>HMW: how might we show total cost upfront for budget shoppers, so they don't feel surprised at checkout?</li>
+</ul>
+<p class="mindset">Mindset shift: raw insight → design challenge</p>
+
+<h3 class="h-ideate">Ideate</h3>
+<ul>
+<li>Crazy 8s: product-page shipping calculator, free-shipping-threshold banner, cart cost breakdown, flat-rate shipping, real-time estimator, price-match guarantee, "no surprises" badge, progress bar to free shipping</li>
+<li>Assumption: showing shipping cost earlier reduces abandonment</li>
+<li>Shortlist: real-time shipping estimator on the product page</li>
+</ul>
+<p class="mindset">Mindset shift: many ideas → one bet</p>
+
+<h3 class="h-mvp">MVP Scope</h3>
+<ul>
+<li><strong>Must:</strong> zip-code shipping estimator on product page</li>
+<li><strong>Should:</strong> "free shipping over $X" banner</li>
+<li><strong>Could:</strong> cost breakdown in cart summary</li>
+<li><strong>Won't:</strong> price-match guarantee, flat-rate global shipping</li>
+</ul>
+<p class="mindset">Mindset shift: a bet → real-world proof</p>
+</div>
+
+<div class="example">
+<h2>3. Fitness app — onboarding churn</h2>
+<div class="goal">Goal: 70% → 50% onboarding churn</div>
+
+<h3 class="h-discover">Discover</h3>
+<ul>
+<li>Idea pitch: too many setup screens before first value moment</li>
+<li>Proto-persona: busy parent, wants quick wins, low patience</li>
+<li>Competitor audit: competitors reach first workout in under 2 minutes, we take 8</li>
+<li>5 Whys: root cause — onboarding front-loads all setup before any workout</li>
+<li>AI-assisted research: 80% of drop-off happens at step 4 of 9 (goal-setting screen)</li>
+<li>Empathy map: overwhelmed, bored, "just let me start"</li>
+</ul>
+<p class="mindset">Mindset shift: unknown problem → understood problem</p>
+
+<h3 class="h-synth">Synthesise</h3>
+<ul>
+<li>Affinity mapping: strongest theme — "too much setup, no early win"</li>
+<li>POV: busy parent needs a fast first win, because long setup feels like a barrier before value</li>
+<li>HMW: how might we get new users to their first workout win in under 2 minutes, so they feel value before finishing setup?</li>
+</ul>
+<p class="mindset">Mindset shift: raw insight → design challenge</p>
+
+<h3 class="h-ideate">Ideate</h3>
+<ul>
+<li>Crazy 8s: skip-setup quick start, one-tap sample workout, setup-after-workout flow, progress teaser, gamified setup, 3-question setup, guest mode, video preview</li>
+<li>Assumption: delaying full setup until after the first workout reduces churn</li>
+<li>Shortlist: "try a workout first" guest mode before setup</li>
+</ul>
+<p class="mindset">Mindset shift: many ideas → one bet</p>
+
+<h3 class="h-mvp">MVP Scope</h3>
+<ul>
+<li><strong>Must:</strong> one-tap guest workout, zero setup required</li>
+<li><strong>Should:</strong> save-progress prompt after workout completes</li>
+<li><strong>Could:</strong> gamified badge for first workout</li>
+<li><strong>Won't:</strong> full personalization engine, social sharing</li>
+</ul>
+<p class="mindset">Mindset shift: a bet → real-world proof</p>
+</div>
+
+<div class="example">
+<h2>4. New product — freelancer quarterly tax estimator app</h2>
+<div class="goal">Goal: validate demand before building (greenfield, no existing product)</div>
+
+<h3 class="h-discover">Discover</h3>
+<ul>
+<li>Problem interviews: how do freelancers currently estimate/pay quarterly taxes today?</li>
+<li>Jobs-to-be-done: they "hire" spreadsheets, accountants, or guesswork — all feel stressful or late</li>
+<li>Market scan: existing tools are accountant-facing, not freelancer-facing — gap in self-serve simplicity</li>
+<li>Assumption mapping: riskiest belief — freelancers will trust an app enough to act on its tax estimate</li>
+<li>Smoke test: fake-door landing page — "Get your quarterly tax number in 2 minutes" + email signup</li>
+<li>5 Whys: root cause — freelancers avoid dealing with taxes until the deadline because it feels complex and anxiety-inducing, not because tools don't exist</li>
+</ul>
+<p class="mindset">Mindset shift: unknown problem → understood problem</p>
+
+<h3 class="h-synth">Synthesise</h3>
+<ul>
+<li>Affinity mapping: strongest theme — "tax anxiety from complexity, not lack of tools"</li>
+<li>POV: freelancers need a fast, low-anxiety way to know what they owe, because current tools assume accounting knowledge they don't have</li>
+<li>HMW: how might we give freelancers a trustworthy tax number in minutes, so they don't dread quarterly deadlines?</li>
+</ul>
+<p class="mindset">Mindset shift: raw insight → design challenge</p>
+
+<h3 class="h-ideate">Ideate</h3>
+<ul>
+<li>Crazy 8s: bank-linked auto-estimator, photo-of-invoice scanner, chatbot tax coach, monthly "set-aside" reminder, one-tap accountant handoff, gamified savings tracker, simple 3-question calculator, calendar-based nudges</li>
+<li>Assumption: a 3-question calculator is enough to build initial trust before asking for bank access</li>
+<li>Shortlist: simple 3-question tax calculator as the entry point</li>
+</ul>
+<p class="mindset">Mindset shift: many ideas → one bet</p>
+
+<h3 class="h-mvp">MVP Scope</h3>
+<ul>
+<li><strong>Must:</strong> 3-question calculator giving a ballpark tax estimate, no signup required to see result</li>
+<li><strong>Should:</strong> email capture to save the estimate and get a deadline reminder</li>
+<li><strong>Could:</strong> shareable "set-aside" savings goal</li>
+<li><strong>Won't (this round):</strong> bank linking, full accounting integration, accountant handoff</li>
+<li><strong>Success metric:</strong> % of landing page visitors who complete the calculator and give their email — proves demand before writing real product code</li>
+</ul>
+<p class="mindset">Mindset shift: a bet → real-world proof</p>
+</div>
+
+<div class="example">
+<h2>5. Client-brought problem — trustworthy after-school activities for kids</h2>
+<div class="goal">Goal: no metric given by client — team must define what "success" means before scoping anything</div>
+
+<h3 class="h-discover">Discover</h3>
+<ul>
+<li>Client brief (raw): "Parents struggle to find trustworthy after-school activities for their kids" — no product, no metric, just a pain point</li>
+<li>Problem interviews: parents currently rely on word-of-mouth, Facebook parent groups, and school flyers — not directories or apps</li>
+<li>Jobs-to-be-done: parents "hire" a trusted friend's recommendation over any listing site, even an incomplete one</li>
+<li>Market scan: existing activity directories show business-submitted info only — no signal from other real parents</li>
+<li>5 Whys: root cause — parents don't distrust the *activities*, they distrust *unverified listings with no one vouching for them*</li>
+<li>Defined success metric (team-set, since none existed): % of interviewed parents who'd sign up for early access to a trust-verified finder</li>
+</ul>
+<p class="mindset">Mindset shift: vague complaint → testable business goal</p>
+
+<h3 class="h-synth">Synthesise</h3>
+<ul>
+<li>Affinity mapping: strongest theme — "trust comes from people, not listings"</li>
+<li>POV: parents need to know an activity is vetted by someone like them, because impersonal directories don't carry the same trust as word-of-mouth</li>
+<li>HMW: how might we bring word-of-mouth-level trust to an online activity finder, so parents feel as confident as a personal recommendation?</li>
+</ul>
+<p class="mindset">Mindset shift: raw insight → design challenge</p>
+
+<h3 class="h-ideate">Ideate</h3>
+<ul>
+<li>Crazy 8s: parent review/rating system, "recommended by parents like you" tags, neighborhood group integration, video testimonials, verified-by-school badge, invite-only community access, local parent ambassador program, attendance-based badges</li>
+<li>Assumption: reviews specifically from other verified parents (not generic star ratings) is what builds enough trust to try something new</li>
+<li>Shortlist: parent review system with verified-attendance tags</li>
+</ul>
+<p class="mindset">Mindset shift: many ideas → one bet</p>
+
+<h3 class="h-mvp">MVP Scope</h3>
+<ul>
+<li><strong>Must:</strong> attendance-verified parent reviews visible on each activity listing (e.g. "verified: 12 parents' kids attended")</li>
+<li><strong>Should:</strong> sort/filter by "most reviewed by parents near you"</li>
+<li><strong>Could:</strong> option to message a reviewing parent directly</li>
+<li><strong>Won't (this round):</strong> ambassador program, school partnership badges, in-app community groups</li>
+<li><strong>Success metric:</strong> % of early-access signups who go on to browse at least 3 verified listings — validates the trust signal before building the full platform</li>
+</ul>
+<p class="mindset">Mindset shift: a bet → real-world proof</p>
+</div>
+
+</body>
+</html>

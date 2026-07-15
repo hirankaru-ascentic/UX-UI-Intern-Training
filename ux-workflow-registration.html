@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UX Workflow Walkthrough — Registration Drop-off</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0c;
+    --card: #161616;
+    --card-2: #1d1d1d;
+    --border: #2a2a2a;
+    --coral: #FF645B;
+    --amber: #FECE51;
+    --purple: #9B90FF;
+    --gray: #9a9a9a;
+    --white: #f5f5f5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: var(--white);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  h1, h2, h3, .display { font-family: 'Space Grotesk', sans-serif; }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 24px 40px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
+  .topbar .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; }
+  .brand .ring { width: 18px; height: 18px; border: 2.5px solid var(--coral); border-radius: 50%; }
+  .topbar h1 { font-size: 24px; margin: 0; font-weight: 600; color: var(--white); }
+  .topbar .scenario { color: var(--gray); font-size: 15px; }
+
+  .stepper { display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px 30px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; background: none; border: none; color: var(--gray); font-family: 'Inter', sans-serif; padding: 6px 16px; }
+  .step .icon-ring { width: 58px; height: 58px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+  .step svg { width: 26px; height: 26px; stroke: var(--gray); transition: stroke 0.2s ease; }
+  .step .label { font-size: 15px; font-weight: 600; text-align: center; max-width: 110px; }
+  .step .num { font-size: 12px; color: var(--gray); letter-spacing: 0.5px; }
+  .step.active .icon-ring { border-color: var(--coral); background: rgba(255,100,91,0.08); }
+  .step.active svg { stroke: var(--coral); }
+  .step.active .label { color: var(--white); }
+  .connector { flex: 0 0 36px; height: 2px; background-image: linear-gradient(to right, var(--coral) 50%, transparent 50%); background-size: 10px 2px; margin-top: 29px; }
+
+  .stage-panel { display: none; max-width: 1020px; margin: 0 auto; padding: 0 30px 100px; }
+  .stage-panel.active { display: block; animation: fade 0.25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .stage-head { margin-bottom: 30px; }
+  .stage-head .eyebrow { color: var(--coral); font-size: 15px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .stage-head h2 { font-size: 34px; margin: 0 0 10px; }
+  .stage-head .desc { color: var(--gray); font-size: 18px; font-style: italic; }
+
+  .section-label { font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); margin: 40px 0 14px; display:flex; align-items:center; gap:10px;}
+  .section-label .lvl { background:#232323; color:var(--gray); font-size:11px; padding:3px 9px; border-radius:20px; letter-spacing:0.5px; }
+  .section-sub { color: var(--gray); font-size: 15px; margin: -8px 0 16px; }
+
+  .raw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+  .raw-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 15px; color: #d8d8d8; }
+  .raw-item .tag { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--amber); margin-bottom: 6px; }
+  .raw-item.compact { padding: 8px 12px; font-size: 13px; opacity:0.75; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 560px; }
+  th, td { padding: 12px 16px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+  th { color: var(--gray); text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; background: #141414; }
+  tr:last-child td { border-bottom: none; }
+  td.gap { color: var(--coral); font-weight: 600; }
+
+  .funnel-list { display: flex; flex-direction: column; gap: 10px; }
+  .funnel-step { display: flex; align-items: center; gap: 16px; }
+  .funnel-step .pct { font-weight: 700; color: var(--amber); width: 50px; font-size: 16px; }
+  .funnel-step .bar-bg { flex: 1; background: #1e1e1e; border-radius: 6px; height: 14px; overflow: hidden; }
+  .funnel-step .bar-fill { height: 100%; background: var(--coral); border-radius: 6px; }
+  .funnel-step .step-label { width: 230px; color: #ddd; font-size: 14px; }
+  .funnel-drop { color: var(--coral); font-size: 14px; font-weight: 700; margin-top: 10px; }
+
+  .chain { display: flex; flex-direction: column; gap: 0; }
+  .chain-item { display: flex; gap: 14px; padding: 10px 0; border-left: 2px solid var(--border); padding-left: 18px; position: relative; }
+  .chain-item .n { position: absolute; left: -13px; top: 8px; background: var(--bg); color: var(--purple); font-weight: 700; font-size: 13px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--purple); display: flex; align-items: center; justify-content: center; }
+  .chain-item .txt { font-size: 15px; color: #ddd; }
+  .chain-item.root .txt { color: var(--white); font-weight: 600; }
+  .chain-item.root .n { border-color: var(--coral); color: var(--coral); }
+
+  .narrowed-card { background: var(--card-2); border: 1.5px solid var(--coral); border-radius: 14px; padding: 26px 28px; margin-top: 16px; }
+  .narrowed-card .kicker { color: var(--amber); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .narrowed-card .main { font-size: 21px; font-weight: 600; margin: 0 0 12px; }
+  .narrowed-card .why { color: var(--gray); font-size: 15px; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px; }
+  .narrowed-card .why b { color: var(--white); }
+
+  .theme-group { border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; border: 1px solid var(--border); background: var(--card); }
+  .theme-group.winner { border-color: var(--coral); background: var(--card-2); }
+  .theme-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+  .theme-name { font-weight: 700; font-size: 17px; }
+  .theme-group.winner .theme-name { color: var(--coral); }
+  .theme-votes { color: var(--amber); font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .theme-notes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sticky { background: #1e1e1e; border: 1px solid #2f2f2f; border-radius: 6px; padding: 8px 12px; font-size: 13.5px; color: #ddd; max-width: 260px; }
+
+  .persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .persona-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .persona-card.primary { border-color: var(--coral); background: var(--card-2); }
+  .persona-card h4 { margin: 0 0 4px; font-size: 17px; }
+  .persona-card .role { color: var(--amber); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .persona-card p { margin: 4px 0; font-size: 13.5px; color: #ccc; }
+  .persona-card p b { color: #fff; }
+  .persona-badge { display:inline-block; font-size:11px; background:var(--coral); color:#1a0a09; font-weight:700; padding:2px 8px; border-radius:20px; margin-top:8px; }
+
+  .empathy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .empathy-quad { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .empathy-quad .q-label { color: var(--purple); font-weight: 700; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .empathy-quad p { margin: 0; font-size: 15px; color: #ddd; }
+
+  .hmw-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+  .hmw-card { border-radius: 10px; padding: 16px 20px; border: 1px solid var(--border); background: var(--card); }
+  .hmw-card.chosen { border-color: var(--coral); background: var(--card-2); }
+  .hmw-card .src { font-size: 12px; color: var(--gray); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
+  .hmw-card.chosen .src { color: var(--amber); }
+  .hmw-card .txt { font-size: 16.5px; }
+  .hmw-card .status { font-size: 13px; margin-top: 8px; color: var(--gray); font-style: italic; }
+  .hmw-card.chosen .status { color: var(--coral); font-weight: 700; font-style: normal; }
+
+  .moscow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; margin-top: 16px; }
+  .mos-card { border-radius: 10px; padding: 18px 20px; font-size: 15px; }
+  .mos-card h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .mos-card ul { margin: 0; padding-left: 18px; color: #ddd; }
+  .mos-must { background: rgba(255,100,91,0.1); border: 1px solid var(--coral); } .mos-must h4 { color: var(--coral); }
+  .mos-should { background: rgba(254,206,81,0.08); border: 1px solid var(--amber); } .mos-should h4 { color: var(--amber); }
+  .mos-could { background: rgba(155,144,255,0.08); border: 1px solid var(--purple); } .mos-could h4 { color: var(--purple); }
+  .mos-wont { background: #1a1a1a; border: 1px solid var(--border); } .mos-wont h4 { color: var(--gray); }
+
+  .epic-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; margin-top: 16px; }
+  .epic-block .epic-title { color: var(--purple); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .epic-block .epic-name { font-size: 19px; font-weight: 600; margin-bottom: 16px; }
+  .story { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #232323; font-size: 15.5px; color: #ddd; }
+  .story:first-of-type { border-top: none; }
+  .story .dot { color: var(--purple); font-weight: 700; }
+
+  .carries { margin-top: 40px; padding: 18px 24px; border-left: 3px solid var(--coral); color: var(--gray); font-size: 15.5px; background: rgba(255,255,255,0.02); border-radius: 0 8px 8px 0; }
+  .carries b { color: var(--white); }
+
+  .wire-row { display: flex; gap: 16px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
+  .wire-row .v { font-weight: 700; color: var(--amber); min-width: 30px; font-size: 15px; }
+  .wire-row .body b { color: var(--white); }
+  .wire-row .body span { color: var(--gray); font-size: 14.5px; }
+
+  @media (max-width: 720px) {
+    .topbar { flex-direction: column; align-items: flex-start; gap: 8px; padding: 18px 20px; }
+    .stepper { padding: 26px 6px; }
+    .step .label { max-width: 74px; font-size: 12.5px; }
+    .connector { flex: 0 0 14px; }
+    .stage-head h2 { font-size: 26px; }
+    .empathy-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="ring"></span> ascentic</div>
+  <div>
+    <h1>UX Workflow Walkthrough</h1>
+    <div class="scenario">Case: online learning platform · registration completion 28% → 45%</div>
+  </div>
+</div>
+
+<nav class="stepper" id="stepper">
+  <button class="step active" data-stage="discover">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></div>
+    <span class="num">01</span><span class="label">Discover</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="synthesise">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"></path></svg></div>
+    <span class="num">02</span><span class="label">Synthesise</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="ideate">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 11 14 9 22 21 10 13 10 13 2"></polygon></svg></div>
+    <span class="num">03</span><span class="label">Ideate</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="scope">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg></div>
+    <span class="num">04</span><span class="label">Scope</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="design">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></div>
+    <span class="num">05</span><span class="label">Design</span>
+  </button>
+</nav>
+
+<!-- ================= DISCOVER ================= -->
+<section class="stage-panel active" id="panel-discover">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 1 of 5</div>
+    <h2>Discover &amp; Research</h2>
+    <div class="desc">Understand the user, the problem and the market — before assuming anything.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>User Interviews — quotes &amp; pain points (n=8)</div>
+  <div class="raw-grid">
+    <div class="raw-item"><span class="tag">Value not visible</span>"I wanted to see what I'd get before typing my email."</div>
+    <div class="raw-item"><span class="tag">Trust mismatch</span>"The signup form felt like a big ask for something I hadn't tried."</div>
+    <div class="raw-item"><span class="tag">Value not visible</span>"I just wanted to browse the courses first."</div>
+    <div class="raw-item"><span class="tag">Fit uncertainty</span>"I didn't know if the course matched my skill level."</div>
+    <div class="raw-item"><span class="tag">Form friction</span>"Too many fields — name, phone, birthday — for just looking around."</div>
+    <div class="raw-item"><span class="tag">Context pressure</span>"I was on my phone during a break, didn't want to commit to anything long."</div>
+    <div class="raw-item"><span class="tag">Trust mismatch</span>"I've been burned by free trials that ask for a credit card immediately."</div>
+    <div class="raw-item"><span class="tag">Value not visible</span>"If I could've seen one lesson, I would've signed up right after."</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Competitive Analysis &amp; Audit — gap + opportunity map</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Competitor</th><th>What they do well</th><th>Gap / opportunity for us</th></tr>
+      <tr><td>Coursera</td><td>Free preview of first lesson before signup</td><td class="gap">We show zero content pre-signup</td></tr>
+      <tr><td>Udemy</td><td>Full curriculum + reviews visible before account creation</td><td class="gap">Curriculum is hidden until after signup</td></tr>
+      <tr><td>Khan Academy</td><td>No signup required to start learning at all</td><td class="gap">We gate everything behind signup</td></tr>
+      <tr><td>LinkedIn Learning</td><td>Requires signup, but shows instructor credibility upfront</td><td class="gap">No instructor info shown — minor gap</td></tr>
+    </table>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data · situational</span>Analytics Review — funnel drop-off</div>
+  <div class="funnel-list">
+    <div class="funnel-step"><span class="pct">100%</span><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div><span class="step-label">Landing page view</span></div>
+    <div class="funnel-step"><span class="pct">61%</span><div class="bar-bg"><div class="bar-fill" style="width:61%"></div></div><span class="step-label">"Create account" click</span></div>
+    <div class="funnel-step"><span class="pct">58%</span><div class="bar-bg"><div class="bar-fill" style="width:58%"></div></div><span class="step-label">Value prop / plan screen shown</span></div>
+    <div class="funnel-step"><span class="pct">41%</span><div class="bar-bg"><div class="bar-fill" style="width:41%"></div></div><span class="step-label">Signup form started</span></div>
+    <div class="funnel-step"><span class="pct">28%</span><div class="bar-bg"><div class="bar-fill" style="width:28%"></div></div><span class="step-label">Signup form completed</span></div>
+  </div>
+  <div class="funnel-drop">Biggest single drop: 17 points, right after the value-prop screen — before the form even starts.</div>
+
+  <div class="section-label"><span class="lvl">Raw data · situational</span>Survey — "What stopped you from finishing signup?" (n=140)</div>
+  <div class="raw-grid">
+    <div class="raw-item"><span class="tag">61%</span>Wanted more information first</div>
+    <div class="raw-item"><span class="tag">22%</span>Form was too long</div>
+    <div class="raw-item"><span class="tag">11%</span>Changed my mind about the platform</div>
+    <div class="raw-item"><span class="tag">6%</span>Other</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Pattern check</span>5 Whys — root cause chain</div>
+  <div class="chain">
+    <div class="chain-item"><span class="n">1</span><span class="txt">Why do users abandon signup? → The form feels like a commitment.</span></div>
+    <div class="chain-item"><span class="n">2</span><span class="txt">Why does it feel like a commitment? → They're asked for details before seeing anything.</span></div>
+    <div class="chain-item"><span class="n">3</span><span class="txt">Why does that matter? → They don't know yet if the course is worth their info.</span></div>
+    <div class="chain-item"><span class="n">4</span><span class="txt">Why don't they know? → The platform shows no content until after signup.</span></div>
+    <div class="chain-item root"><span class="n">5</span><span class="txt">Why is content locked before signup? → An untested assumption that showing value first would hurt conversion.</span></div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Framing</span>Define the Problem Space</div>
+  <div class="raw-item" style="max-width:100%;">"We are solving why prospective learners abandon account creation before completing it — for users still deciding if the platform is worth their time, not yet committed learners."</div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Problem brief</div>
+  <div class="narrowed-card">
+    <div class="kicker">Problem brief</div>
+    <div class="main">Users abandon signup before seeing course value — because the platform asks for personal details before showing anything worth committing to.</div>
+    <div class="why"><b>Why this won:</b> 5 of 8 interview quotes, 3 of 4 competitor gaps, the single biggest funnel drop, and the top survey reason (61%) all converge on the same moment and cause. The other threads (trust/spam concern, form length, fit uncertainty) are real but smaller — they carry forward as minority themes, not dropped.</div>
+  </div>
+
+  <div class="carries">Carries into Synthesis: <b>all 8 quotes, the competitor gap map, funnel data, and survey results</b> — nothing discarded, everything ready for clustering.</div>
+</section>
+
+<!-- ================= SYNTHESISE ================= -->
+<section class="stage-panel" id="panel-synthesise">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 2 of 5</div>
+    <h2>Synthesis</h2>
+    <div class="desc">Turn raw research into clear insights — find the pattern, name the problem.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Carried in</span>Raw material from Discovery</div>
+  <div class="raw-grid">
+    <div class="raw-item compact">8 interview quotes</div>
+    <div class="raw-item compact">4-row competitor gap map</div>
+    <div class="raw-item compact">Funnel data (5 steps)</div>
+    <div class="raw-item compact">Survey results (4 reasons)</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Clustering</span>Affinity Mapping — every note grouped by theme</div>
+  <div class="section-sub">Dot-voted by the team after grouping — vote count shows relative weight, not just cluster size.</div>
+
+  <div class="theme-group winner">
+    <div class="theme-head"><span class="theme-name">Theme A — No value shown before signup</span><span class="theme-votes">●●●●●●●●● 9 votes</span></div>
+    <div class="theme-notes">
+      <div class="sticky">"I wanted to see what I'd get before typing my email."</div>
+      <div class="sticky">"I just wanted to browse the courses first."</div>
+      <div class="sticky">"If I could've seen one lesson, I would've signed up right after."</div>
+      <div class="sticky">Competitor gap: Coursera, Udemy, Khan all show something before signup</div>
+      <div class="sticky">Survey: 61% "wanted more information first"</div>
+    </div>
+  </div>
+
+  <div class="theme-group">
+    <div class="theme-head"><span class="theme-name">Theme B — Form feels risky / trust concern</span><span class="theme-votes">●●●● 4 votes</span></div>
+    <div class="theme-notes">
+      <div class="sticky">"The signup form felt like a big ask for something I hadn't tried."</div>
+      <div class="sticky">"I've been burned by free trials that ask for a credit card immediately."</div>
+      <div class="sticky">"Too many fields for just looking around."</div>
+    </div>
+  </div>
+
+  <div class="theme-group">
+    <div class="theme-head"><span class="theme-name">Theme C — Context &amp; fit uncertainty</span><span class="theme-votes">●● 2 votes</span></div>
+    <div class="theme-notes">
+      <div class="sticky">"I didn't know if the course matched my skill level."</div>
+      <div class="sticky">"I was on my phone during a break, didn't want to commit to anything long."</div>
+    </div>
+  </div>
+
+  <div class="theme-group">
+    <div class="theme-head"><span class="theme-name">Theme D — Straightforward friction (situational)</span><span class="theme-votes">● 1 vote</span></div>
+    <div class="theme-notes">
+      <div class="sticky">Survey: 22% "form was too long"</div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Faces on the data</span>Persona Building</div>
+  <div class="persona-grid">
+    <div class="persona-card primary">
+      <div class="role">Theme A</div>
+      <h4>Alex — The Skeptical Browser</h4>
+      <p><b>Goal:</b> see if the course is worth it before committing</p>
+      <p><b>Pain:</b> won't hand over details for something unproven</p>
+      <p><b>Context:</b> mobile, work break, low patience</p>
+      <span class="persona-badge">Primary — highest-weighted theme</span>
+    </div>
+    <div class="persona-card">
+      <div class="role">Theme B</div>
+      <h4>Priya — The Cautious Trialist</h4>
+      <p><b>Goal:</b> try something risk-free, no hidden charges</p>
+      <p><b>Pain:</b> burned before by "free trial" tricks</p>
+      <p><b>Context:</b> desktop, evening, reads fine print</p>
+    </div>
+    <div class="persona-card">
+      <div class="role">Theme C</div>
+      <h4>Marcus — The Uncertain Beginner</h4>
+      <p><b>Goal:</b> confirm the course fits his skill level first</p>
+      <p><b>Pain:</b> afraid of picking wrong and wasting effort</p>
+      <p><b>Context:</b> comparing platforms in parallel tabs</p>
+    </div>
+    <div class="persona-card">
+      <div class="role">Theme C</div>
+      <h4>Dana — The Busy Multitasker</h4>
+      <p><b>Goal:</b> quick decision, no lengthy process</p>
+      <p><b>Pain:</b> no patience for forms mid task-switch</p>
+      <p><b>Context:</b> phone, commute, fragmented attention</p>
+    </div>
+    <div class="persona-card">
+      <div class="role">Theme D</div>
+      <h4>Sam — The Form-Fatigued Shopper</h4>
+      <p><b>Goal:</b> finish onboarding fast, already decided</p>
+      <p><b>Pain:</b> unnecessary fields slow down a made decision</p>
+      <p><b>Context:</b> has already decided, wants low friction</p>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Felt experience</span>Empathy Mapping — Alex (primary persona)</div>
+  <div class="empathy-grid">
+    <div class="empathy-quad"><div class="q-label">Says</div><p>"Let me just look around first."</p></div>
+    <div class="empathy-quad"><div class="q-label">Thinks</div><p>"Is this actually worth my email and password?"</p></div>
+    <div class="empathy-quad"><div class="q-label">Does</div><p>Closes the tab at the signup form.</p></div>
+    <div class="empathy-quad"><div class="q-label">Feels</div><p>Skeptical, slightly rushed, not yet convinced.</p></div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>POV Statement</div>
+  <div class="narrowed-card">
+    <div class="kicker">POV statement</div>
+    <div class="main" style="margin-bottom:0;">Alex needs to see proof of value before committing personal details, because he doesn't yet trust the course is worth the trade-off.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Reframed as opportunities</span>HMW Questions — one chosen, two parked</div>
+  <div class="hmw-grid">
+    <div class="hmw-card chosen">
+      <div class="src">From Theme A (9 votes) — chosen</div>
+      <div class="txt">How might we show proof of value for users like Alex, before asking for signup, so that they trust it's worth committing their details?</div>
+      <div class="status">Selected — highest-weighted theme, matches the biggest funnel drop</div>
+    </div>
+    <div class="hmw-card">
+      <div class="src">From Theme B (4 votes) — parked</div>
+      <div class="txt">How might we reduce perceived risk in the signup form for cautious users like Priya, so they don't feel tricked?</div>
+      <div class="status">Parked for a future iteration, not discarded</div>
+    </div>
+    <div class="hmw-card">
+      <div class="src">From Theme C (2 votes) — parked</div>
+      <div class="txt">How might we help uncertain beginners like Marcus confirm course fit before signing up?</div>
+      <div class="status">Parked for a future iteration, not discarded</div>
+    </div>
+  </div>
+
+  <div class="carries">Carries into Ideation: <b>the chosen HMW</b> — the design challenge everything after this must answer. Parked HMWs stay visible for the next research cycle.</div>
+</section>
+
+<!-- ================= IDEATE ================= -->
+<section class="stage-panel" id="panel-ideate">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 3 of 5</div>
+    <h2>Ideation</h2>
+    <div class="desc">Diverge wide against the chosen HMW, then score honestly.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Crazy 8s — 8 concepts, scored</div>
+  <div class="raw-grid">
+    <div class="raw-item"><span class="tag">Impact: High · Effort: Low</span>Free preview lesson</div>
+    <div class="raw-item"><span class="tag">Impact: Med · Effort: Low</span>Demo video on landing page</div>
+    <div class="raw-item"><span class="tag">Impact: High · Effort: High</span>"Try before signup" sandbox</div>
+    <div class="raw-item"><span class="tag">Impact: Low · Effort: Low</span>Testimonials up front</div>
+    <div class="raw-item"><span class="tag">Impact: Med · Effort: Low</span>Curriculum outline preview</div>
+    <div class="raw-item"><span class="tag">Impact: Med · Effort: High</span>Live sample class snippet</div>
+    <div class="raw-item"><span class="tag">Impact: Low · Effort: Med</span>Instructor intro video</div>
+    <div class="raw-item"><span class="tag">Impact: Med · Effort: Med</span>Progress-based unlock</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Shortlisted concept</div>
+  <div class="narrowed-card">
+    <div class="kicker">Shortlisted concept</div>
+    <div class="main">Free preview lesson before signup.</div>
+    <div class="why"><b>Why this won:</b> best impact-to-effort ratio of the set, and it answers the chosen HMW directly without new infrastructure like a sandbox or live class.</div>
+  </div>
+
+  <div class="carries">Carries into Scoping: <b>the concept + its core assumption</b> — "a free preview increases perceived value enough to offset form friction."</div>
+</section>
+
+<!-- ================= SCOPE ================= -->
+<section class="stage-panel" id="panel-scope">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 4 of 5</div>
+    <h2>Scoping</h2>
+    <div class="desc">Pick the smallest thing that tests the riskiest assumption.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Scope</span>MoSCoW</div>
+  <div class="moscow-grid">
+    <div class="mos-card mos-must"><h4>Must</h4><ul><li>One free lesson, no login required</li><li>Signup prompt appears only after the lesson ends</li></ul></div>
+    <div class="mos-card mos-should"><h4>Should</h4><ul><li>"1 of X lessons" progress indicator</li></ul></div>
+    <div class="mos-card mos-could"><h4>Could</h4><ul><li>Testimonial strip below the preview</li></ul></div>
+    <div class="mos-card mos-wont"><h4>Won't (this round)</h4><ul><li>Full curriculum browsing</li><li>Sandbox mode</li><li>Instructor intro video</li><li>Live sample class</li></ul></div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Epic &amp; stories</div>
+  <div class="epic-block">
+    <div class="epic-title">Epic</div>
+    <div class="epic-name">Show proof of value before requiring signup</div>
+    <div class="story"><span class="dot">●</span> As a prospective learner, I want to watch one free lesson without logging in, so I can judge if the course is worth my time.</div>
+    <div class="story"><span class="dot">●</span> As a prospective learner, I want to see how many lessons are in the full course, so I understand the value of signing up.</div>
+    <div class="story"><span class="dot">●</span> As a returning visitor, I want to be prompted to sign up only after finishing the preview, so I'm not interrupted mid-value.</div>
+  </div>
+
+  <div class="narrowed-card" style="margin-top:16px;">
+    <div class="kicker">Success metric</div>
+    <div class="main" style="margin-bottom:0;">Registration completion moves from 28% toward 45% on the test cohort vs. control.</div>
+  </div>
+
+  <div class="carries">Carries into Design: <b>the scoped MVP spec + the metric that will prove or kill it.</b> Won't-items are parked in the backlog, not deleted — revisit after the test result.</div>
+</section>
+
+<!-- ================= DESIGN ================= -->
+<section class="stage-panel" id="panel-design">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 5 of 5</div>
+    <h2>Design</h2>
+    <div class="desc">Build small, test fast, iterate on evidence — not opinion.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Information Architecture — screens &amp; content needed</div>
+  <div class="raw-grid">
+    <div class="raw-item"><span class="tag">Top level</span>Landing / marketing page</div>
+    <div class="raw-item"><span class="tag">Top level</span>Course catalog (browse)</div>
+    <div class="raw-item"><span class="tag">Second level</span>Course detail page</div>
+    <div class="raw-item"><span class="tag">New — from MVP scope</span>Preview lesson player (no login)</div>
+    <div class="raw-item"><span class="tag">New — from MVP scope</span>Signup / account creation</div>
+    <div class="raw-item"><span class="tag">Post-signup</span>Learner dashboard</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>IA decision</div>
+  <div class="narrowed-card">
+    <div class="kicker">Structural change</div>
+    <div class="main">Preview lesson player is inserted between Course detail and Signup — not after it.</div>
+    <div class="why"><b>Why this won:</b> matches the MVP scope's Must item exactly — signup only appears once the preview is watched, not before.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>User / Task Flow — "watch preview, then sign up"</div>
+  <div class="chain">
+    <div class="chain-item"><span class="n">1</span><span class="txt">Landing page</span></div>
+    <div class="chain-item"><span class="n">2</span><span class="txt">Browse course catalog</span></div>
+    <div class="chain-item"><span class="n">3</span><span class="txt">Open course detail page</span></div>
+    <div class="chain-item"><span class="n">4</span><span class="txt">Watch preview lesson — no login required</span></div>
+    <div class="chain-item root"><span class="n">5</span><span class="txt">Lesson ends → signup prompt appears here, not earlier</span></div>
+    <div class="chain-item"><span class="n">6</span><span class="txt">Create account</span></div>
+    <div class="chain-item"><span class="n">7</span><span class="txt">Land on learner dashboard</span></div>
+  </div>
+
+  <div class="carries" style="margin-top:20px;">This exact flow and IA structure is what the wireframes below are built against — step 5 is the one moment the whole MVP scope exists to protect.</div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Wireframe iterations &amp; usability tests</div>
+  <div class="wire-row"><div class="v">v1</div><div class="body"><b>Auto-play preview, no controls.</b> <span>Finding: users didn't realize they could skip or pause — felt trapped.</span></div></div>
+  <div class="wire-row"><div class="v">v2</div><div class="body"><b>Added play / pause / skip controls.</b> <span>Finding: better, but the signup prompt interrupted mid-lesson — felt like a bait.</span></div></div>
+  <div class="wire-row"><div class="v">v3</div><div class="body"><b>Signup prompt only after the lesson ends, "Continue to full course" CTA.</b> <span>Finding: users completed the preview and moved to signup naturally.</span></div></div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Validated prototype</div>
+  <div class="narrowed-card">
+    <div class="kicker">Validated prototype</div>
+    <div class="main">v3 flow — preview with playback controls, signup CTA appears only after completion.</div>
+    <div class="why"><b>Why this won:</b> the only version where users didn't feel interrupted or trapped, across every usability session.</div>
+  </div>
+
+  <div class="carries">Loop closes: this ships as a live A/B test against the original goal — <b>28% → 45% registration completion.</b> If it moves the number, the assumption is proven. If not, the loop returns to Discover, not to a redesign of the same idea.</div>
+</section>
+
+<script>
+  const steps = document.querySelectorAll('.step');
+  const panels = document.querySelectorAll('.stage-panel');
+  steps.forEach(step => {
+    step.addEventListener('click', () => {
+      const target = step.getAttribute('data-stage');
+      steps.forEach(s => s.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      step.classList.add('active');
+      document.getElementById('panel-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

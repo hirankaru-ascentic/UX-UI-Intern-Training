@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UX Workflow Walkthrough — Trustworthy After-School Activities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0c; --card: #161616; --card-2: #1d1d1d; --border: #2a2a2a;
+    --coral: #FF645B; --amber: #FECE51; --purple: #9B90FF; --gray: #9a9a9a; --white: #f5f5f5;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); background-image:radial-gradient(circle,#1a1a1a 1px,transparent 1px); background-size:22px 22px; color:var(--white); font-family:'Inter',-apple-system,sans-serif; font-size:18px; line-height:1.6; min-height:100vh; }
+  h1,h2,h3,.display{ font-family:'Space Grotesk',sans-serif; }
+  .topbar{ display:flex; justify-content:space-between; align-items:center; padding:24px 40px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:10px; }
+  .topbar .brand{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:20px; }
+  .brand .ring{ width:18px; height:18px; border:2.5px solid var(--coral); border-radius:50%; }
+  .topbar h1{ font-size:24px; margin:0; font-weight:600; color:var(--white); }
+  .topbar .scenario{ color:var(--gray); font-size:15px; }
+  .client-banner{ max-width:1020px; margin:24px auto 0; padding:16px 22px; border:1px dashed var(--coral); border-radius:10px; color:#ddd; font-size:15.5px; font-style:italic; }
+  .client-banner b{ color:var(--coral); font-style:normal; }
+  .stepper{ display:flex; align-items:flex-start; justify-content:center; padding:36px 20px 30px; max-width:1100px; margin:0 auto; flex-wrap:wrap; }
+  .step{ display:flex; flex-direction:column; align-items:center; gap:12px; cursor:pointer; background:none; border:none; color:var(--gray); font-family:'Inter',sans-serif; padding:6px 16px; }
+  .step .icon-ring{ width:58px; height:58px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; transition:all .2s ease; }
+  .step svg{ width:26px; height:26px; stroke:var(--gray); transition:stroke .2s ease; }
+  .step .label{ font-size:15px; font-weight:600; text-align:center; max-width:110px; }
+  .step .num{ font-size:12px; color:var(--gray); letter-spacing:.5px; }
+  .step.active .icon-ring{ border-color:var(--coral); background:rgba(255,100,91,.08); }
+  .step.active svg{ stroke:var(--coral); }
+  .step.active .label{ color:var(--white); }
+  .connector{ flex:0 0 36px; height:2px; background-image:linear-gradient(to right,var(--coral) 50%,transparent 50%); background-size:10px 2px; margin-top:29px; }
+  .stage-panel{ display:none; max-width:1020px; margin:0 auto; padding:0 30px 100px; }
+  .stage-panel.active{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .stage-head{ margin-bottom:30px; }
+  .stage-head .eyebrow{ color:var(--coral); font-size:15px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+  .stage-head h2{ font-size:34px; margin:0 0 10px; }
+  .stage-head .desc{ color:var(--gray); font-size:18px; font-style:italic; }
+  .section-label{ font-size:14px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gray); margin:40px 0 14px; display:flex; align-items:center; gap:10px; }
+  .section-label .lvl{ background:#232323; color:var(--gray); font-size:11px; padding:3px 9px; border-radius:20px; letter-spacing:.5px; }
+  .section-sub{ color:var(--gray); font-size:15px; margin:-8px 0 16px; }
+  .raw-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; }
+  .raw-item{ background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-size:15px; color:#d8d8d8; }
+  .raw-item .tag{ display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--amber); margin-bottom:6px; }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:10px; }
+  table{ width:100%; border-collapse:collapse; font-size:15px; min-width:560px; }
+  th,td{ padding:12px 16px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
+  th{ color:var(--gray); text-transform:uppercase; font-size:12px; letter-spacing:.5px; background:#141414; }
+  tr:last-child td{ border-bottom:none; }
+  td.gap{ color:var(--coral); font-weight:600; }
+  .chain{ display:flex; flex-direction:column; gap:0; }
+  .chain-item{ display:flex; gap:14px; padding:10px 0; border-left:2px solid var(--border); padding-left:18px; position:relative; }
+  .chain-item .n{ position:absolute; left:-13px; top:8px; background:var(--bg); color:var(--purple); font-weight:700; font-size:13px; width:24px; height:24px; border-radius:50%; border:2px solid var(--purple); display:flex; align-items:center; justify-content:center; }
+  .chain-item .txt{ font-size:15px; color:#ddd; }
+  .chain-item.root .txt{ color:var(--white); font-weight:600; }
+  .chain-item.root .n{ border-color:var(--coral); color:var(--coral); }
+  .narrowed-card{ background:var(--card-2); border:1.5px solid var(--coral); border-radius:14px; padding:26px 28px; margin-top:16px; }
+  .narrowed-card .kicker{ color:var(--amber); font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  .narrowed-card .main{ font-size:21px; font-weight:600; margin:0 0 12px; }
+  .narrowed-card .why{ color:var(--gray); font-size:15px; border-top:1px solid var(--border); padding-top:14px; margin-top:4px; }
+  .narrowed-card .why b{ color:var(--white); }
+  .theme-group{ border-radius:12px; padding:18px 20px; margin-bottom:14px; border:1px solid var(--border); background:var(--card); }
+  .theme-group.winner{ border-color:var(--coral); background:var(--card-2); }
+  .theme-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+  .theme-name{ font-weight:700; font-size:17px; }
+  .theme-group.winner .theme-name{ color:var(--coral); }
+  .theme-votes{ color:var(--amber); font-weight:700; font-size:14px; white-space:nowrap; }
+  .theme-notes{ display:flex; flex-wrap:wrap; gap:8px; }
+  .sticky{ background:#1e1e1e; border:1px solid #2f2f2f; border-radius:6px; padding:8px 12px; font-size:13.5px; color:#ddd; max-width:260px; }
+  .persona-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+  .persona-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .persona-card.primary{ border-color:var(--coral); background:var(--card-2); }
+  .persona-card h4{ margin:0 0 4px; font-size:17px; }
+  .persona-card .role{ color:var(--amber); font-size:12px; font-weight:700; text-transform:uppercase; margin-bottom:8px; }
+  .persona-card p{ margin:4px 0; font-size:13.5px; color:#ccc; }
+  .persona-card p b{ color:#fff; }
+  .persona-badge{ display:inline-block; font-size:11px; background:var(--coral); color:#1a0a09; font-weight:700; padding:2px 8px; border-radius:20px; margin-top:8px; }
+  .empathy-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .empathy-quad{ background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 18px; }
+  .empathy-quad .q-label{ color:var(--purple); font-weight:700; font-size:12px; text-transform:uppercase; margin-bottom:8px; letter-spacing:.5px; }
+  .empathy-quad p{ margin:0; font-size:15px; color:#ddd; }
+  .hmw-grid{ display:flex; flex-direction:column; gap:12px; margin-top:14px; }
+  .hmw-card{ border-radius:10px; padding:16px 20px; border:1px solid var(--border); background:var(--card); }
+  .hmw-card.chosen{ border-color:var(--coral); background:var(--card-2); }
+  .hmw-card .src{ font-size:12px; color:var(--gray); text-transform:uppercase; font-weight:700; margin-bottom:6px; letter-spacing:.5px; }
+  .hmw-card.chosen .src{ color:var(--amber); }
+  .hmw-card .txt{ font-size:16.5px; }
+  .hmw-card .status{ font-size:13px; margin-top:8px; color:var(--gray); font-style:italic; }
+  .hmw-card.chosen .status{ color:var(--coral); font-weight:700; font-style:normal; }
+  .moscow-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:16px; }
+  .mos-card{ border-radius:10px; padding:18px 20px; font-size:15px; }
+  .mos-card h4{ margin:0 0 10px; font-size:15px; text-transform:uppercase; letter-spacing:.5px; }
+  .mos-card ul{ margin:0; padding-left:18px; color:#ddd; }
+  .mos-must{ background:rgba(255,100,91,.1); border:1px solid var(--coral); } .mos-must h4{ color:var(--coral); }
+  .mos-should{ background:rgba(254,206,81,.08); border:1px solid var(--amber); } .mos-should h4{ color:var(--amber); }
+  .mos-could{ background:rgba(155,144,255,.08); border:1px solid var(--purple); } .mos-could h4{ color:var(--purple); }
+  .mos-wont{ background:#1a1a1a; border:1px solid var(--border); } .mos-wont h4{ color:var(--gray); }
+  .epic-block{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px 24px; margin-top:16px; }
+  .epic-block .epic-title{ color:var(--purple); font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+  .epic-block .epic-name{ font-size:19px; font-weight:600; margin-bottom:16px; }
+  .story{ display:flex; gap:12px; padding:10px 0; border-top:1px solid #232323; font-size:15.5px; color:#ddd; }
+  .story:first-of-type{ border-top:none; }
+  .story .dot{ color:var(--purple); font-weight:700; }
+  .carries{ margin-top:40px; padding:18px 24px; border-left:3px solid var(--coral); color:var(--gray); font-size:15.5px; background:rgba(255,255,255,.02); border-radius:0 8px 8px 0; }
+  .carries b{ color:var(--white); }
+  .wire-row{ display:flex; gap:16px; align-items:flex-start; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 18px; margin-bottom:10px; }
+  .wire-row .v{ font-weight:700; color:var(--amber); min-width:30px; font-size:15px; }
+  .wire-row .body b{ color:var(--white); }
+  .wire-row .body span{ color:var(--gray); font-size:14.5px; }
+  @media (max-width:720px){ .topbar{flex-direction:column; align-items:flex-start; gap:8px; padding:18px 20px;} .stepper{padding:26px 6px;} .step .label{max-width:74px; font-size:12.5px;} .connector{flex:0 0 14px;} .stage-head h2{font-size:26px;} .empathy-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="ring"></span> ascentic</div>
+  <div>
+    <h1>UX Workflow Walkthrough</h1>
+    <div class="scenario">Case: client-brought problem · no product, no metric yet</div>
+  </div>
+</div>
+
+<div class="client-banner"><b>Client brief:</b> "Parents struggle to find trustworthy after-school activities for their kids." No product yet. No metric given. The team has to validate the problem before proposing anything.</div>
+
+<nav class="stepper" id="stepper">
+  <button class="step active" data-stage="discover">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></div>
+    <span class="num">01</span><span class="label">Discover</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="synthesise">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"></path></svg></div>
+    <span class="num">02</span><span class="label">Synthesise</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="ideate">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 11 14 9 22 21 10 13 10 13 2"></polygon></svg></div>
+    <span class="num">03</span><span class="label">Ideate</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="scope">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg></div>
+    <span class="num">04</span><span class="label">Scope</span>
+  </button>
+  <div class="connector"></div>
+  <button class="step" data-stage="design">
+    <div class="icon-ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></div>
+    <span class="num">05</span><span class="label">Design</span>
+  </button>
+</nav>
+
+<!-- ================= DISCOVER ================= -->
+<section class="stage-panel active" id="panel-discover">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 1 of 5</div>
+    <h2>Discover &amp; Research</h2>
+    <div class="desc">No metric given — the team's first job is figuring out what "success" would even mean.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Problem Interviews — parent quotes</div>
+  <div class="raw-grid">
+    <div class="raw-item"><span class="tag">Trust in people</span>"I only try classes my friends' kids have already done."</div>
+    <div class="raw-item"><span class="tag">Structure gap</span>"Facebook parent groups are where I actually find stuff — not apps."</div>
+    <div class="raw-item"><span class="tag">Trust in people</span>"I don't trust a business's own description of their class."</div>
+    <div class="raw-item"><span class="tag">Structure gap</span>"School flyers are outdated half the time."</div>
+    <div class="raw-item"><span class="tag">Trust in people</span>"I want to know real parents' kids attended and it was fine."</div>
+    <div class="raw-item"><span class="tag">Trust in people</span>"I've signed up for a class that turned out totally different from the listing."</div>
+    <div class="raw-item"><span class="tag">Trust in people</span>"Word of mouth from someone I know beats five-star ratings from strangers."</div>
+    <div class="raw-item"><span class="tag">Time-poor</span>"I don't have time to vet every provider myself."</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Jobs-to-be-done</div>
+  <div class="raw-item" style="max-width:100%;">Parents "hire" a trusted friend's recommendation over any directory or app — even an incomplete one.</div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Market scan — gap map</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Existing source</th><th>What it offers</th><th>Gap for parents</th></tr>
+      <tr><td>Local activity directories</td><td>Business-submitted listings, searchable</td><td class="gap">No parent verification at all</td></tr>
+      <tr><td>Facebook parent groups</td><td>Real trust, real recommendations</td><td class="gap">Unsearchable, disorganized, scattered</td></tr>
+      <tr><td>School flyers</td><td>Local, simple, familiar</td><td class="gap">Outdated, easy to miss</td></tr>
+      <tr><td>Review aggregators (Yelp-style)</td><td>Star ratings at scale</td><td class="gap">Reviews come from strangers, not "people like me"</td></tr>
+    </table>
+  </div>
+
+  <div class="section-label"><span class="lvl">Pattern check</span>5 Whys — root cause chain</div>
+  <div class="chain">
+    <div class="chain-item"><span class="n">1</span><span class="txt">Why do parents struggle to find trustworthy activities? → They don't trust the info they find.</span></div>
+    <div class="chain-item"><span class="n">2</span><span class="txt">Why don't they trust it? → It comes from the business itself, or from strangers.</span></div>
+    <div class="chain-item"><span class="n">3</span><span class="txt">Why does that matter? → They want confirmation from someone like them who already vetted it.</span></div>
+    <div class="chain-item"><span class="n">4</span><span class="txt">Why isn't that visible today? → No platform captures "which parents like me already sent their kid here."</span></div>
+    <div class="chain-item root"><span class="n">5</span><span class="txt">Why not? → No product exists that verifies attendance and collects parent-specific trust signals.</span></div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Team-defined</span>Business goal — since the client gave none</div>
+  <div class="raw-item" style="max-width:100%;">Success metric the team sets: % of interviewed parents who would sign up for early access to a trust-verified activity finder — validation threshold before building anything real.</div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Problem brief</div>
+  <div class="narrowed-card">
+    <div class="kicker">Problem brief</div>
+    <div class="main">Parents don't lack activity options — they lack a trustworthy way to know if an activity is actually good, because existing sources are either from strangers or from the business itself, never from parents like them.</div>
+    <div class="why"><b>Why this won:</b> 5 of 8 interview quotes and the review-aggregator gap all converge on the same missing ingredient — verification from a peer, not a stranger or a seller. The structure/time-poor threads are real but smaller — parked, not dropped.</div>
+  </div>
+
+  <div class="carries">Carries into Synthesis: <b>all 8 quotes, the market gap map, and the 5 Whys chain</b> — ready for clustering.</div>
+</section>
+
+<!-- ================= SYNTHESISE ================= -->
+<section class="stage-panel" id="panel-synthesise">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 2 of 5</div>
+    <h2>Synthesis</h2>
+    <div class="desc">Turn raw research into clear insights — find the pattern, name the problem.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Clustering</span>Affinity Mapping — every note grouped by theme</div>
+  <div class="theme-group winner">
+    <div class="theme-head"><span class="theme-name">Theme A — Trust comes from people like me, not businesses or strangers</span><span class="theme-votes">●●●●●●●● 8 votes</span></div>
+    <div class="theme-notes">
+      <div class="sticky">"I only try classes my friends' kids have already done."</div>
+      <div class="sticky">"I don't trust a business's own description of their class."</div>
+      <div class="sticky">"I want to know real parents' kids attended and it was fine."</div>
+      <div class="sticky">"Signed up for a class that turned out totally different."</div>
+      <div class="sticky">"Word of mouth beats five-star ratings from strangers."</div>
+      <div class="sticky">Gap: review aggregators are strangers, not peers</div>
+    </div>
+  </div>
+  <div class="theme-group">
+    <div class="theme-head"><span class="theme-name">Theme B — Existing sources are unstructured or outdated</span><span class="theme-votes">●●● 3 votes</span></div>
+    <div class="theme-notes">
+      <div class="sticky">"Facebook parent groups are where I actually find stuff."</div>
+      <div class="sticky">"School flyers are outdated half the time."</div>
+    </div>
+  </div>
+  <div class="theme-group">
+    <div class="theme-head"><span class="theme-name">Theme C — No time to vet manually</span><span class="theme-votes">● 1 vote</span></div>
+    <div class="theme-notes">
+      <div class="sticky">"I don't have time to vet every provider myself."</div>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Faces on the data</span>Persona Building</div>
+  <div class="persona-grid">
+    <div class="persona-card primary">
+      <div class="role">Theme A</div>
+      <h4>Priya — The Word-of-Mouth Parent</h4>
+      <p><b>Goal:</b> know an activity is vetted by someone like her</p>
+      <p><b>Pain:</b> doesn't trust business or stranger reviews</p>
+      <p><b>Context:</b> relies on her parent friend group</p>
+      <span class="persona-badge">Primary — highest-weighted theme</span>
+    </div>
+    <div class="persona-card">
+      <div class="role">Theme B</div>
+      <h4>Tom — The Overwhelmed Searcher</h4>
+      <p><b>Goal:</b> find organized, current info fast</p>
+      <p><b>Pain:</b> Facebook groups and flyers are messy/stale</p>
+      <p><b>Context:</b> searches late at night after bedtime</p>
+    </div>
+    <div class="persona-card">
+      <div class="role">Theme C</div>
+      <h4>Aisha — The Time-Poor Parent</h4>
+      <p><b>Goal:</b> quick decision, no personal research needed</p>
+      <p><b>Pain:</b> juggling multiple kids' schedules, no time to vet</p>
+      <p><b>Context:</b> decides in stolen minutes between tasks</p>
+    </div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Felt experience</span>Empathy Mapping — Priya (primary persona)</div>
+  <div class="empathy-grid">
+    <div class="empathy-quad"><div class="q-label">Says</div><p>"I only try classes my friends' kids have already done."</p></div>
+    <div class="empathy-quad"><div class="q-label">Thinks</div><p>"Would another parent I trust actually vouch for this?"</p></div>
+    <div class="empathy-quad"><div class="q-label">Does</div><p>Asks in her parent group chat before booking anything.</p></div>
+    <div class="empathy-quad"><div class="q-label">Feels</div><p>Cautious, protective, wants reassurance.</p></div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>POV Statement</div>
+  <div class="narrowed-card">
+    <div class="kicker">POV statement</div>
+    <div class="main" style="margin-bottom:0;">Priya needs to know an activity is vetted by parents like her, because impersonal listings — from businesses or strangers — don't carry real trust.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Reframed as opportunities</span>HMW Questions — one chosen, two parked</div>
+  <div class="hmw-grid">
+    <div class="hmw-card chosen">
+      <div class="src">From Theme A (8 votes) — chosen</div>
+      <div class="txt">How might we bring word-of-mouth-level trust to an online activity finder, so parents feel as confident as a personal recommendation?</div>
+      <div class="status">Selected — highest-weighted theme, matches the root cause directly</div>
+    </div>
+    <div class="hmw-card">
+      <div class="src">From Theme B (3 votes) — parked</div>
+      <div class="txt">How might we organize scattered word-of-mouth info into one searchable, current source for parents like Tom?</div>
+      <div class="status">Parked for a future iteration, not discarded</div>
+    </div>
+    <div class="hmw-card">
+      <div class="src">From Theme C (1 vote) — parked</div>
+      <div class="txt">How might we help time-poor parents like Aisha make a fast decision without doing their own vetting?</div>
+      <div class="status">Parked for a future iteration, not discarded</div>
+    </div>
+  </div>
+
+  <div class="carries">Carries into Ideation: <b>the chosen HMW</b>. Parked HMWs stay visible for the next research cycle.</div>
+</section>
+
+<!-- ================= IDEATE ================= -->
+<section class="stage-panel" id="panel-ideate">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 3 of 5</div>
+    <h2>Ideation</h2>
+    <div class="desc">Diverge wide against the chosen HMW, then score honestly.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Crazy 8s — 8 concepts, scored</div>
+  <div class="raw-grid">
+    <div class="raw-item"><span class="tag">Impact: High · Effort: Med</span>Parent review system tied to verified attendance</div>
+    <div class="raw-item"><span class="tag">Impact: Med · Effort: Med</span>"Recommended by parents like you" matching tag</div>
+    <div class="raw-item"><span class="tag">Impact: Med · Effort: High</span>Neighborhood parent group integration</div>
+    <div class="raw-item"><span class="tag">Impact: Low · Effort: Med</span>Video testimonials from other families</div>
+    <div class="raw-item"><span class="tag">Impact: Med · Effort: High</span>Verified-by-school partnership badge</div>
+    <div class="raw-item"><span class="tag">Impact: High · Effort: High</span>Invite-only community access</div>
+    <div class="raw-item"><span class="tag">Impact: Low · Effort: High</span>Local parent ambassador program</div>
+    <div class="raw-item"><span class="tag">Impact: Low · Effort: Low</span>Attendance-based badges for reviewers</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Shortlisted concept</div>
+  <div class="narrowed-card">
+    <div class="kicker">Shortlisted concept</div>
+    <div class="main">Parent review system with verified-attendance tags.</div>
+    <div class="why"><b>Why this won:</b> best impact-to-effort ratio, answers the HMW directly — trust comes from verified peers, not a new community feature or partnership overhead.</div>
+  </div>
+
+  <div class="carries">Carries into Scoping: <b>the concept + its core assumption</b> — "reviews specifically from verified parents build enough trust to try something new."</div>
+</section>
+
+<!-- ================= SCOPE ================= -->
+<section class="stage-panel" id="panel-scope">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 4 of 5</div>
+    <h2>Scoping</h2>
+    <div class="desc">Pick the smallest thing that tests the riskiest assumption.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Scope</span>MoSCoW</div>
+  <div class="moscow-grid">
+    <div class="mos-card mos-must"><h4>Must</h4><ul><li>Attendance-verified parent reviews visible on each listing</li></ul></div>
+    <div class="mos-card mos-should"><h4>Should</h4><ul><li>Sort/filter by "most reviewed by parents near you"</li></ul></div>
+    <div class="mos-card mos-could"><h4>Could</h4><ul><li>Message a reviewing parent directly</li></ul></div>
+    <div class="mos-card mos-wont"><h4>Won't (this round)</h4><ul><li>Ambassador program</li><li>School partnership badges</li><li>In-app community groups</li></ul></div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Epic &amp; stories</div>
+  <div class="epic-block">
+    <div class="epic-title">Epic</div>
+    <div class="epic-name">Bring word-of-mouth trust to activity discovery</div>
+    <div class="story"><span class="dot">●</span> As a parent researching activities, I want to see reviews only from parents whose kids actually attended, so I can trust the feedback is real.</div>
+    <div class="story"><span class="dot">●</span> As a parent, I want to filter listings by "most reviewed by parents near me," so I find options my own community already trusts.</div>
+    <div class="story"><span class="dot">●</span> As a reviewing parent, I want my review tied to verified attendance, so other parents know it's credible.</div>
+  </div>
+
+  <div class="narrowed-card" style="margin-top:16px;">
+    <div class="kicker">Success metric</div>
+    <div class="main" style="margin-bottom:0;">% of early-access signups who go on to browse at least 3 verified listings — validates the trust signal before building the full platform.</div>
+  </div>
+
+  <div class="carries">Carries into Design: <b>the scoped spec + the validation metric.</b> Won't-items are parked in the backlog — revisit after the pilot signal.</div>
+</section>
+
+<!-- ================= DESIGN ================= -->
+<section class="stage-panel" id="panel-design">
+  <div class="stage-head">
+    <div class="eyebrow">Phase 5 of 5</div>
+    <h2>Design</h2>
+    <div class="desc">Build small, test fast, iterate on evidence — not opinion.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Information Architecture — screens &amp; content needed</div>
+  <div class="raw-grid">
+    <div class="raw-item"><span class="tag">Top level</span>Landing / marketing page</div>
+    <div class="raw-item"><span class="tag">Top level</span>Activity search / browse</div>
+    <div class="raw-item"><span class="tag">Second level</span>Activity detail page</div>
+    <div class="raw-item"><span class="tag">New — from MVP scope</span>Verified parent reviews section</div>
+    <div class="raw-item"><span class="tag">New — from MVP scope</span>Early-access signup</div>
+    <div class="raw-item"><span class="tag">Post-signup</span>Parent dashboard (saved activities, reviews given)</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>IA decision</div>
+  <div class="narrowed-card">
+    <div class="kicker">Structural change</div>
+    <div class="main">Verified parent reviews sit directly on the activity detail page — not in a separate reviews tab.</div>
+    <div class="why"><b>Why this won:</b> it's the core trust signal, not a secondary feature — burying it defeats the entire HMW.</div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>User / Task Flow — "find a trustworthy activity"</div>
+  <div class="chain">
+    <div class="chain-item"><span class="n">1</span><span class="txt">Landing page</span></div>
+    <div class="chain-item"><span class="n">2</span><span class="txt">Search / browse activities</span></div>
+    <div class="chain-item"><span class="n">3</span><span class="txt">Open activity detail page</span></div>
+    <div class="chain-item root"><span class="n">4</span><span class="txt">See verified parent review count immediately — no extra click</span></div>
+    <div class="chain-item"><span class="n">5</span><span class="txt">Read reviews from verified attending parents</span></div>
+    <div class="chain-item"><span class="n">6</span><span class="txt">Sign up for early access / save activity</span></div>
+    <div class="chain-item"><span class="n">7</span><span class="txt">Land on parent dashboard</span></div>
+  </div>
+
+  <div class="section-label"><span class="lvl">Raw data</span>Wireframe iterations &amp; usability tests</div>
+  <div class="wire-row"><div class="v">v1</div><div class="body"><b>Generic star rating only, buried in a "Reviews" tab.</b> <span>Finding: parents said "could be anyone" — no trust gained.</span></div></div>
+  <div class="wire-row"><div class="v">v2</div><div class="body"><b>Added "verified attendee" badge, still in a separate tab.</b> <span>Finding: better trust, but parents didn't scroll far enough to see it.</span></div></div>
+  <div class="wire-row"><div class="v">v3</div><div class="body"><b>Verified review count + top review shown directly on the main detail view.</b> <span>Finding: parents immediately said "that's from people who actually went — I believe it."</span></div></div>
+
+  <div class="section-label"><span class="lvl">Narrowed</span>Validated prototype</div>
+  <div class="narrowed-card">
+    <div class="kicker">Validated prototype</div>
+    <div class="main">v3 flow — verified reviews surfaced immediately on the activity detail page, no extra click.</div>
+    <div class="why"><b>Why this won:</b> the only version where the trust signal was seen instantly — matching how word-of-mouth trust actually works: immediate, not researched.</div>
+  </div>
+
+  <div class="carries">Loop closes: this ships as an <b>early-access landing page + limited neighborhood pilot</b>, measured against the validation metric. Since no product existed before this, success means "enough signal to build the real thing" — not an improvement on an existing number.</div>
+</section>
+
+<script>
+  const steps = document.querySelectorAll('.step');
+  const panels = document.querySelectorAll('.stage-panel');
+  steps.forEach(step => {
+    step.addEventListener('click', () => {
+      const target = step.getAttribute('data-stage');
+      steps.forEach(s => s.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      step.classList.add('active');
+      document.getElementById('panel-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
